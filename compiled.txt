@@ -1,0 +1,1046 @@
+const ContextServices = React.createContext();
+
+let ContextServicesProvider = (props) => {
+
+	let { useEffect, useState, useRef } = React;
+
+	let [test, setTest] = useState("test")
+	let [windowHeight, setWindowHeight] = useState(window.innerHeight)
+	let [windowWidth, setWindowWidth] = useState(window.innerWidth)
+	let [margins, setMargins] = useState("2%");
+	let [screenWidth, setScreenWidth] = useState(null)
+	let modal = useRef(null)
+
+
+	let getTest = () => {
+
+		return "test"
+	}
+
+	let resizing = () => {
+		setWindowHeight(window.innerHeight)
+		setWindowWidth(window.innerWidth)
+
+	}
+
+	let widthSize = () => {
+		let size = "md"
+		if(windowWidth <= 450) size = "sm"	
+		else if(windowWidth > 450 && windowWidth <= 650) size = "md"	
+		else if(windowWidth > 650 && windowWidth <= 950) size = "lg"
+		else if(windowWidth > 950 && windowWidth <= 1350) size = "xl"
+		else if(windowWidth > 1350) size = "xxl"
+
+		return size;
+	}
+
+	let screenWidthChange = () => {
+		let size = widthSize();
+
+		setScreenWidth(size)
+	}
+
+	let sideMargins = () => {
+
+		let size = widthSize();
+		// console.log(size)
+		let margin = "2%"
+
+		if(size == "sm") margin = "2%";
+		else if (size == "md") margin = "3%";
+		else if (size == "lg") margin = "5%";
+		else if (size == "xl") margin = "7%";
+		else if (size == "xxl") margin = "9%";
+
+		// console.log(margin)
+		setMargins(margin)
+	}
+
+
+	let [styles, setStyles] = useState({
+		
+		windowHeight: {
+			minHeight: windowHeight,
+			
+		},
+		trueHeight: {
+			height: windowHeight,
+			position: "absolute",
+			width: "100%"
+		},
+
+		backgroundGradient: {
+			backgroundImage: "linear-gradient(#0c353e, #17465a)"
+		},
+		transparentGradient: {
+			 backgroundImage: "linear-gradient(to bottom, rgba(12,54,62,0) 0%, rgba(12,54,62,1) 33%)"
+		},
+
+		
+		
+		bcTitle: {
+			width: "400px", color: "white", lineHeight: "8px", marginBottom: "40px",  marginTop: "100px"
+		},
+		bc: {
+			display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "center"
+		},
+		solution: {
+			display: "flex", 
+			justifyContent: "center",
+			flexWrap: "wrap"
+			
+		}
+
+	})
+
+
+	useEffect(() => {
+		window.addEventListener("resize", () => {
+			resizing()
+			screenWidthChange();
+		})
+		
+		return () => window.removeEventListener("resize", () => {resizing() ; screenWidthChange();});
+	}, [])	
+
+	useEffect(() => {
+		// console.log(windowHeight, windowWidth)
+		sideMargins()
+		
+
+		// screenWidthChange();
+	}, [windowHeight, windowWidth])
+
+	useEffect( () => {
+	
+	}, [styles])
+
+	
+
+	return (
+		<ContextServices.Provider value={{
+			test, 
+			setTest,
+			getTest,
+			styles,
+			windowWidth,
+			margins,
+			screenWidth,
+			windowHeight,
+			modal
+		}}>
+
+			{props.children}
+		</ContextServices.Provider>
+		)
+}
+let Navbar = () => {
+
+	let { useContext, useEffect, useState } = React
+	let { windowHeight,windowWidth } = useContext(ContextServices)
+	let [hover, setHover] = useState(false)
+
+	
+
+	let [local] = useState({
+		ul: {
+			// textAlign:"center",
+			listStyleType: "none",
+			margin: 0,
+			padding: 0,
+			// overflow: "hidden",
+			backgroundColor: "#333333",
+			top: 0,
+			position: "fixed",
+			width: "100%",
+			zIndex: 9999,
+			display: "flex",
+			flexDirection: "row",
+			flexWrap: "wrap",
+			justifyContent: "center"
+
+
+
+		},
+		li: {
+				fontSize: "12px",
+				display: "inline-block",
+			  color: "white",
+			  textAlign: "center",
+			  padding: "13px 5px 8px 5px",
+			  textDecoration: "none",
+			  cursor: "pointer",
+
+
+		},
+
+		hover: {
+			backgroundColor: "#111"
+		},
+		border: {
+			borderRight: "1px solid gray",
+			margin: "12px 3px 18px 3px"
+		},
+		downloadBoard: {
+			
+			backgroundColor: "#282828",
+			padding: "2px 12px 2px 12px ",
+			borderRadius: 8
+		}
+	})
+
+	let scrollTo = (e, to) => {
+        document.getElementById(to).scrollIntoView({behavior: "smooth"});
+        // clearActive();
+        // e.target.className += " active"
+
+        // if (document.getElementById("navBttn").ariaExpanded == "true") document.getElementById("navBttn").click();
+    }
+
+	useEffect( () => {
+
+	})
+
+	return (
+		<div>
+			<ul style={{...local.ul, visibility: windowWidth < 700 ? "hidden" : "visible"}}>
+
+				<li  style={{...local.li}} ><img src={"img/play.png"} style={{height: 20}}/></li> 
+				<li  style={{...local.border}} ></li>
+				<li onClick={(e) => scrollTo(e, "bc")} style={{...local.li}}>Background & Challenges</li> 
+				<li  style={{...local.border}} ></li>
+				<li onClick={(e) => scrollTo(e, "sol")} style={{...local.li}}>Solution</li> 
+				<li  style={{...local.border}} ></li>
+				<li onClick={(e) => scrollTo(e, "ss")} style={{...local.li}}>Results & Effectiveness</li> 
+				<li  style={{...local.border}} ></li>
+				<li onClick={(e) => scrollTo(e, "ss")} style={{...local.li}}>Slideshow</li>
+				<li style={{marginRight: 50}}></li>
+				<li  style={{...local.li, }}>
+					<div style={{...local.downloadBoard}}>
+					<img  src={"img/dl.png"} style={{width: 10, marginRight: 5, }}/>
+						Download board
+					</div>
+				</li>
+			</ul>
+
+			<NavbarDropdown />
+			
+			<style jsx="true">
+			{`
+
+ 
+				`}
+			</style>
+			</div>
+
+	)
+}
+let NavbarDropdown = () => {
+
+	let { useContext, useEffect, useState, useRef } = React
+	let { windowHeight,  windowWidth } = useContext(ContextServices)
+	let dropdown = useRef(null)
+
+	let toggleDropdown = () => {
+		dropdown.current.classList.toggle("show")
+
+	}
+	let dropdownClick = () => {
+		dropdown.current.classList.remove("show")
+	}
+	let scrollTo = (e, to) => {
+        document.getElementById(to).scrollIntoView({behavior: "smooth"});
+       
+    }
+
+	let [s] = useState({
+		dropdown: {
+			display: "flex",
+			justifyContent: "end",
+
+		},
+		dropdownButton: {
+		
+			position: "fixed",
+			zIndex: 999,
+			border: 0,
+			borderRadius: "30px",
+			top: 10,
+			right: 10,
+			backgroundColor: "#333333",
+			cursor: "pointer"
+			
+			
+		},
+		downloadBoard: {
+			backgroundColor: "#282828",
+			padding: "2px 12px 2px 12px ",
+			borderRadius: 8
+		}
+	})
+
+	useEffect( () => {
+		if(windowWidth >= 700) dropdownClick();
+	},[ windowWidth])
+
+	useEffect( () => {
+		window.onclick = e => {
+			console.log("target")	
+		}
+
+	}, [])
+
+	return (
+		<div style={{visibility: windowWidth >= 700 ? "hidden" : "visible"}}>
+			<div style={{...s.dropdown}}>
+				<button style={{...s.dropdownButton}} onClick={toggleDropdown}> 
+					<span style={{color: "white", fontSize: "40px", margin: "0 7px"}}>&#9776;</span>
+				</button>
+
+				<div className="dropdown" ref={dropdown} >
+				 
+				  <div id="myDropdown" className="dropdown-content" onClick={dropdownClick}>
+				    <a href="#/" onClick={(e)=> scrollTo(e, "bc")}>Background & Challenges</a>
+				    <a href="#/" onClick={(e)=> scrollTo(e, "sol")}>Solution</a>
+				    <a href="#/" onClick={(e)=> scrollTo(e, "ss")}>Results & Effectiveness</a>
+				    <a href="#/" onClick={(e)=> scrollTo(e, "ss")}>Slideshow</a>
+				    <a href="#/" onClick={(e)=> scrollTo(e, "")}>
+				    	<div style={{...s.downloadBoard}}>
+							<img  src={"img/dl.png"} style={{width: 10, marginRight: 5}}/>
+								Download board
+							</div>
+				    </a>
+	
+				  </div>
+				</div>
+			</div>
+
+			<style jsx="true">
+			{`
+				
+
+				.dropdown {
+					display: none;
+					width: 240px;
+					
+					z-index: 999;
+					justify-content: center
+				}
+
+				.dropdown-content {
+				 	font-size: 15px;
+				  position: fixed;
+				  background-color: #333333;
+				  width: 160px;
+				  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+				  z-index: 1;
+				  top: 15px
+				  
+				}
+
+				.dropdown-content a {
+				  color: white;
+				  padding: 12px 16px;
+				  text-decoration: none;
+				  display: block;
+				}
+
+				.dropdown-content a:hover {background-color: #ddd; color: black}
+				.dropdown-content div:hover {background-color: #ddd; color: white}
+
+				.show {display:block;}
+
+			`}
+			</style>
+		</div>
+
+	)
+}
+let Main = () => {
+
+	let { useContext, useEffect, useState } = React
+	let { 
+		windowWidth,
+		margins,
+		windowHeight,
+		modal
+	} = useContext(ContextServices)
+
+	let openModal = () => {
+		modal.current.style.display = "block";
+	}
+
+	useEffect(() => {
+		console.log(windowWidth)
+	}, [margins, windowWidth])
+
+	return (
+		<div id="top">
+			<div className="main " >
+			
+				<div className="main-height main-title main-title-margin" >
+					<div  className="main-color">
+						<h2  >THE</h2>
+						<h1 >WHITESUNDAYS</h1>
+						<p>A MOVIE THAT'S WAITING TO BE WRITTEN</p>
+					</div>
+					
+				</div>
+
+				<div className="main-height  main-play">
+					<img src="img/mainplay.png" className="main-play-image" onClick={openModal}/>
+				</div>
+
+				
+				{/*<img src="img/main.jpg" style={{width: "100%", visibility: "hidden"}}/>*/}
+				
+				
+				
+			</div>
+
+			<style jsx="true">{`
+				.main {
+					
+					
+					background-image: url('img/main.jpg');
+					background-repeat: no-repeat;
+					background-size: cover;
+					background-position: center top;
+
+				}
+				.main-height {
+					height: ${windowHeight}px;
+					min-height: 400px;
+
+				}
+				.abs-height {
+					height: ${windowHeight}px;
+					position: absolute;
+					width: 100%;
+				}
+				.main-title {
+					display: flex;
+					align-items: center;
+					position: absolute;
+					justify-content: start;
+					
+					
+					padding-top: ${windowWidth < 900 ? "90px" : "0px"}
+				}
+				.main-title-margin {
+					
+					margin-left: ${margins};
+					margin-right: ${margins};
+				}
+				.main-title h2 {
+					margin-left: 35px;
+				}
+				.main-title h1 {
+					font-size: 43px;
+				}
+				.main-color {
+					color: white;
+					line-height: 1px;
+				}
+				.main-play {
+					display: flex;
+					justify-content: center;
+					align-items: center;
+
+
+					
+				}
+				.main-play-image {
+					width: 120px;
+					height: 120px;
+					padding-bottom: ${windowWidth < 900 ? "70px" : "0px"};
+					cursor: pointer;
+						z-index: 1
+				}
+				
+			`}
+			</style>
+		</div>
+	)
+}
+let BackgroundChalleges = () => {
+
+
+	let { useContext, useEffect, useState } = React
+	let { styles: {windowHeight, transparentGradient, bcTitle, bc}, margins, windowWidth } = useContext(ContextServices)
+
+	let [hideTitle, setHideTitle] = useState(false)
+	let [bcmargin, setBcmargin] = useState(0)
+	let [bcpadding, setBcpadding] = useState(180)
+
+	useEffect(() => {
+		let hide = false
+		if(windowWidth >= 1030) hide = true
+		else hide = false
+
+		setHideTitle(hide)
+
+	
+	}, [windowWidth])
+
+
+	useEffect(() => {
+		console.log(bcmargin)
+	}, [bcmargin])
+
+	return (
+		<div  style={{...windowHeight, ...transparentGradient}}>
+			<div id="bc" style={{...bc, marginLeft: margins,marginRight: margins,marginTop: bcmargin, paddingTop: bcpadding }}>
+
+				{hideTitle && 
+					<div style={{...bcTitle, }}>
+							<h3 style={{marginLeft: "60px"}}>THE</h3>
+							<h1 style={{fontSize: "42px"}}>WHITESUNDAYS</h1>
+							<p>A MOVIE THAT'S WAITING TO BE WRITTEN</p>
+	
+					</div>
+				}
+				<div style={{width: "450px", color: "white", display: "flex", justifyContent: "center"}}>
+
+					<div style={{width: "350px"}}>
+						<p style={{fontSize:"35px", width: "300px", marginBottom: "0px"}}>Background & Audience</p>
+
+						<p style={{fontSize:"14px",}}>
+							Tourism & Events Queensland wanted to increase consideration
+							of The Whitesundays amongst' social fun seekers'; digitaly savvy
+							consumers that socialize substantially online.
+						</p>
+
+						<p style={{fontSize:"35px", width: "300px", marginBottom: "0px"}}>Problem</p>
+
+						<p style={{fontSize:"14px", }}>
+							The Whitesundays was losing its cachet as an aspirational holiday location.
+						</p>
+
+						<p style={{fontSize:"35px", width: "300px", marginBottom: "0px"}}>Objective</p>
+
+						<p style={{fontSize:"14px", }}>
+							Shift perceptions and re-build the whitesundays' social currency as world-class destination.
+						</p>
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+	)
+}
+let Solutions = () => {
+
+	let { useContext, useEffect, useState } = React
+	let { styles: {windowHeight, backgroundGradient, solution},margins } = useContext(ContextServices)
+
+
+	return (
+		<div id="sol" style={{...windowHeight, ...backgroundGradient, paddingTop: 100}}>
+			<div style={{color: "white", marginLeft: margins, marginRight: margins}}>
+				<p style={{textAlign:"center", margin: "0 0 0 0", fontSize: "35px"}}>Solution</p>
+				<div style={{...solution}}>
+					<div style={{width: "350px" , padding: " 10px 20px"}}>
+						<p style={{fontSize: "15px"}}>We knew movies rated high on the list of our target’s interests and, with incredible beaches, seaplanes, yachts and glamorous locations, the Whitsundays is the perfect setting for a movie. </p>
+
+						<p style={{fontSize: "15px"}}>So we invited Australians to write it:  </p>
+
+						<p style={{fontSize: "25px"}}>
+							The Whitsundays.<br/>
+							A movie that’s waiting to be written.
+						</p>
+
+						<p style={{fontSize: "15px"}}>
+							We enlisted world-renowned screenwriter Craig Pearce as Script Supervisor. Then for 20 days we posted a daily storyboard image on Facebook and Instagram, inviting the public to write scenes for a chance to win a $10,000 luxury holiday.
+						</p>
+
+					</div>
+					<div  style={{width: "350px", padding: " 10px 20px", paddingBottom: "50px"}}>
+						<p style={{fontSize: "15px"}}>The campaign launched with a trailer, radio and online advertising. </p>
+
+						<p style={{fontSize: "15px"}}>We reacted to the storyline as it developed, selecting and treating images according to the previous winning scene.</p>
+
+						<p style={{fontSize: "15px"}}>Each scene written and shared became a compelling “ad” for the Whitsundays.</p> 
+
+						<p style={{fontSize: "15px"}}>Together, a Hollywood screenwriter and the Australian public had created the world’s first crowd-sourced movie storyboard and a story universe with millions of possible permutations. </p>
+
+				
+					</div>
+
+				</div>
+
+			</div>
+
+		</div>
+
+	)
+}
+let ResultsEffectiveness = () => {
+
+
+
+
+	return (
+		<div>
+
+
+		</div>
+
+	)
+}
+let SlideshowVideo = () => {
+
+
+
+
+	return (
+		<div >
+			<iframe style={{maxWidth: 350, maxHeight: 350}}  frameBorder="0"  allowFullScreen
+			src="https://www.youtube.com/embed/GB9zY0p0B24" >
+			</iframe>
+		</div>
+	)
+}
+let SlideshowPhotography = () => {
+
+	let { useEffect } = React
+	let slideIndex = 1;
+
+
+// Next/previous controls
+function plusSlides(n) {
+  showSlides(slideIndex += n);
+}
+
+// Thumbnail image controls
+function currentSlide(n) {
+  showSlides(slideIndex = n);
+}
+
+function showSlides(n) {
+  let i;
+  let slides = document.getElementsByClassName("mySlides");
+  let dots = document.getElementsByClassName("dot");
+  if (n > slides.length) {slideIndex = 1}
+  if (n < 1) {slideIndex = slides.length}
+  for (i = 0; i < slides.length; i++) {
+    slides[i].style.display = "none";
+  }
+  for (i = 0; i < dots.length; i++) {
+    dots[i].className = dots[i].className.replace(" active", "");
+  }
+  slides[slideIndex-1].style.display = "block";
+  dots[slideIndex-1].className += " active";
+}
+
+useEffect( () => {
+	showSlides(slideIndex);
+}, [])
+
+	return (
+		<div>
+			<div className="slideshow-container">
+				 <a className="prev" onClick={()=>{plusSlides(-1)}}>&#10094;</a>
+			  	<a className="next" onClick={()=>{plusSlides(1)}}>&#10095;</a>
+			 
+			  <div className="mySlides fade">
+			    <div className="numbertext">1 / 3</div>
+			    <img src="img/img_lights_wide.jpg"  style={{width:"100%"}}/>
+			    
+			  </div>
+
+			  <div className="mySlides fade">
+			    <div className="numbertext">2 / 3</div>
+			    <img src="img/img_mountains_wide.jpg"  style={{width:"100%"}}/>
+			    
+			  </div>
+
+			  <div className="mySlides fade">
+			    <div className="numbertext">3 / 3</div>
+			    <img src="img/img_nature_wide.jpg" style={{width:"100%"}}/>
+			    
+			  </div>
+
+			
+			 
+			</div>
+			<br/>
+
+			<div style={{textAlign:"center"}}>
+			  <span className="dot" onClick={() => {currentSlide(1)}}></span>
+			  <span className="dot" onClick={() => {currentSlide(2)}}></span>
+			  <span className="dot" onClick={() => {currentSlide(3)}}></span>
+			</div>
+		
+		<style jsx="true">
+			{`
+
+			
+
+/* Slideshow container */
+.slideshow-container {
+  max-width: 1000px;
+  position: relative;
+  margin: auto;
+}
+
+/* Hide the images by default */
+.mySlides {
+  display: none;
+}
+
+/* Next & previous buttons */
+.prev, .next {
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  width: auto;
+  margin-top: -22px;
+  padding: 16px;
+  color: white;
+  font-weight: bold;
+  font-size: 18px;
+  transition: 0.6s ease;
+  border-radius: 0 3px 3px 0;
+  user-select: none;
+}
+
+/* Position the "next button" to the right */
+.prev {
+		left: 0;
+  border-radius: 3px 0 0 3px;
+}
+.next {
+	
+	right: 0;
+  border-radius: 3px 0 0 3px;
+}
+
+
+/* On hover, add a black background color with a little bit see-through */
+.prev:hover, .next:hover {
+  background-color: rgba(0,0,0,0.8);
+}
+
+/* Caption text */
+.text {
+  color: #f2f2f2;
+  font-size: 15px;
+  padding: 8px 12px;
+  position: absolute;
+  bottom: 8px;
+  width: 100%;
+  text-align: center;
+}
+
+/* Number text (1/3 etc) */
+.numbertext {
+  color: #f2f2f2;
+  font-size: 12px;
+  padding: 8px 12px;
+  position: absolute;
+  top: 0;
+}
+
+/* The dots/bullets/indicators */
+.dot {
+  cursor: pointer;
+  height: 15px;
+  width: 15px;
+  margin: 0 2px;
+  background-color: #bbb;
+  border-radius: 50%;
+  display: inline-block;
+  transition: background-color 0.6s ease;
+}
+
+.active, .dot:hover {
+  background-color: #717171;
+}
+
+/* Fading animation */
+.fade {
+  animation-name: fade;
+  animation-duration: 1.5s;
+}
+
+@keyframes fade {
+  from {opacity: .4}
+  to {opacity: 1}
+}
+			`}
+		</style>
+	</div>
+
+	)
+}
+let SlideshowSocial = () => {
+
+
+
+
+	return (
+		<div >
+			<p style={{color: "white"}}>Follow us:</p>
+			<div style={{display: "flex", flexWrap: "wrap", justifyContent: "center"}}>
+				<img  src="img/fb.png" style={{width: "50px", margin: "10px", cursor: "pointer"}}/>
+				<img  src="img/tw.png" style={{width: "50px", margin: "10px", cursor: "pointer"}}/>
+				<img  src="img/rd.png" style={{width: "50px", margin: "10px", cursor: "pointer"}}/>
+				<img  src="img/ig.png" style={{width: "50px", margin: "10px", cursor: "pointer"}}/>
+			</div>
+		</div>
+	)
+}
+let SlideshowPr = () => {
+
+
+
+
+	return (
+		<div style={{color: "white"}}>	
+			<p>Press Release:</p>
+		</div>
+	)
+}
+let SlideshowRadio = () => {
+
+
+
+
+	return (
+		<div style={{color: "white"}}>	
+			<p>Listen to our online radio:</p>
+			<a href="#/" style={{textDecoration: "none", color: "white"}}>www.radio.com</a>
+		</div>
+	)
+}
+let Slideshow = () => {
+
+	let { useContext, useEffect, useState } = React
+	let { styles: {windowHeight, border, backgroundGradient, cursorHover, solution} } = useContext(ContextServices)
+
+	let [tab, setTab] = useState(1)
+
+	let [s] = useState({
+
+		ul: {
+			// textAlign:"center",
+			listStyleType: "none",
+		
+			margin: 0,
+			padding: 0,
+			display: "flex",
+		
+			flexWrap: "wrap",
+			justifyContent: "center"
+
+
+
+		},
+		li: {
+				fontSize: "15px",
+				display: "inline-block",
+			  color: "white",
+			  textAlign: "center",
+			  padding: "8px 8px 8px 8px",
+			  textDecoration: "none",
+			  cursor: "pointer",
+
+
+		},
+
+		hover: {
+			backgroundColor: "#111"
+		},
+		border: {
+			
+			margin: "12px 3px 18px 3px"
+		},
+		downloadBoard: {
+			
+			backgroundColor: "#282828",
+			padding: "2px 12px 2px 12px ",
+			borderRadius: 8
+		}
+	})
+
+	return (
+		<div id="ss" style={{...windowHeight, ...backgroundGradient}}>
+			<div style={{padding: "50px 0 50px 0"}}>
+				<ul style={{...s.ul, paddingBottom: "70px"}}>
+					<li onClick={()=>setTab(1)} 
+					style={{...cursorHover, ...s.li}}>Video</li>
+					<li style={{...s.border}}/>
+					<li onClick={()=>setTab(2)} 
+					style={{...cursorHover, ...s.li}}>Photography</li>
+					<li style={{...s.border}}/>
+					<li onClick={()=>setTab(3)} 
+					style={{...cursorHover, ...s.li}}>Social</li>
+					<li style={{...s.border}}/>
+					<li onClick={()=>setTab(4)} 
+					style={{...cursorHover, ...s.li}}>Pr</li>
+					<li style={{...s.border}}/>
+					<li onClick={()=>setTab(5)} 
+					style={{...cursorHover, ...s.li}}>Radio</li>
+				</ul>
+
+				<div style={{...solution}}>
+					<div style={{width: "500px", textAlign: "center", paddingBottom: "50px", margin: "0px 15px 0px 15px"}}>
+						{tab == 1 && <SlideshowVideo />}
+						{tab == 2 && <SlideshowPhotography />}
+						{tab == 3 && <SlideshowSocial />}
+						{tab == 4 && <SlideshowPr />}
+						{tab == 5 && <SlideshowRadio />}
+
+					</div>
+
+					<div style={{width: "300px", color: "white", }}>
+
+						<p style={{fontSize: "15px", paddingBottom: "100px"}}>
+							Live reads from NOVA presenters reflected the ever-evolving story of Jake in real time, and encouraged people to get involved to shape the story themselves.
+						</p>
+
+						<button style={{
+							backgroundColor: "#178bc1", 
+							border: "1px solid #178bc1",
+							padding: "15px 40px 15px 40px",
+							fontSize: "20px",
+							color: "white",
+							borderRadius: "18px",
+							cursor: "pointer"
+						}}>View Project</button>
+
+
+					</div>
+
+
+				</div>
+
+			</div>
+
+		</div>
+	)
+}
+let Modal = () => {
+
+	let { useContext, useEffect } = React
+
+	let { modal, windowHeight } = useContext(ContextServices)
+
+	let closeModal = () => {
+		modal.current.style.display = "none"
+	}
+
+	
+
+
+	useEffect( () => {
+		window.onclick = e => {
+			if(e.target.className == "modal") {
+				modal.current.style.display = "none"
+			}
+		}
+
+	}, [])
+
+	return (
+		<div>
+			{/*<button id="myBtn">Open Modal</button>*/}
+
+	
+			<div id="myModal" className="modal" ref={modal}>
+
+			
+			  <div className="modal-content">
+			    <span className="close" onClick={closeModal}>&times;</span>
+			    <div style={{textAlign: "center", height: "400px"}}>
+			    	<iframe style={{width: "100%", height: "90%"}}  frameBorder="0"  allowFullScreen
+					src="https://www.youtube.com/embed/GB9zY0p0B24" >
+					</iframe>
+				</div>
+			  </div>
+
+			</div>
+
+
+			<style jsx="true">
+			{`
+				.modal {
+				  display: none; /* Hidden by default */
+				  position: fixed; /* Stay in place */
+				  z-index: 9999; /* Sit on top */
+				  left: 0;
+				  top: 0;
+				  width: 100%; /* Full width */
+				  height: 100%; /* Full height */
+				  overflow: hidden; /* Enable scroll if needed */
+				  background-color: rgb(0,0,0); /* Fallback color */
+				  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+				}
+
+				/* Modal Content/Box */
+				.modal-content {
+				  background-color: #fefefe;
+				  margin: 7% auto; /* 15% from the top and centered */
+				  padding: 0px 20px 25px 20px;
+				  border: 1px solid #888;
+				  width: 80%; /* Could be more or less, depending on screen size */
+				}
+
+				/* The Close Button */
+				.close {
+				  color: #aaa;
+				  float: right;
+				  font-size: 28px;
+				  font-weight: bold;
+				}
+
+				.close:hover,
+				.close:focus {
+				  color: black;
+				  text-decoration: none;
+				  cursor: pointer;
+				}
+
+			`}
+			</style>
+
+		</div>
+
+	)
+}
+
+const App = () => {
+
+	let { useContext, useEffect, useState } = React
+	let {screenWidth, windowWidth, windowHeight } = useContext(ContextServices)
+ 
+
+
+ 	useEffect( () => {
+		// console.log(windowWidth)
+	}, [windowWidth])
+
+
+	return (
+		<div style={{minWidth: "350px", height: 1}}>
+			<Navbar />
+			<Main />
+			<div style={{ bottom: 230, position: "relative"}}>
+				<BackgroundChalleges />
+				<Solutions />
+				<Slideshow />
+			</div>
+			<Modal />
+		</div>
+	)
+}
+// window.console.log = function ()  {}
+
+const Root = ReactDOM.createRoot(document.getElementById('app'));
+Root.render(
+	<ContextServicesProvider>
+		<App />
+	</ContextServicesProvider>
+	)
