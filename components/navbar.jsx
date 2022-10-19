@@ -3,8 +3,37 @@ let Navbar = () => {
 	let { useContext, useEffect, useState } = React
 	let { windowHeight,windowWidth } = useContext(ContextServices)
 	let [hover, setHover] = useState(false)
-
+	let [active, setActive] = useState(1);
+	let [scroll, setScroll] = useState(0)
 	
+
+	useEffect( () => {
+		window.onscroll = e => {
+			setScroll(window.scrollY)
+		}
+	},[])
+
+
+	useEffect( () => {
+		// console.log(scroll)
+		if(scroll < windowHeight){ 
+			setActive(1) 
+		}
+		else if (scroll > windowHeight && scroll <=windowHeight*2) {
+			setActive(2)
+		}
+		else if (scroll > windowHeight* 2 && scroll <=windowHeight*3) {
+			setActive(3)
+		}
+		else if (scroll > windowHeight* 3 && scroll ) {
+			setActive(4)
+		}
+	},[scroll])
+
+	// useEffect( () => {
+	// 	console.log(active)
+	// },[active])
+
 
 	let [local] = useState({
 		ul: {
@@ -69,17 +98,22 @@ let Navbar = () => {
 		<div>
 			<ul style={{...local.ul, visibility: windowWidth < 700 ? "hidden" : "visible"}}>
 
-				<li  style={{...local.li}} ><img src={"img/play.png"} style={{height: 20}}/></li> 
+				<li onClick={(e) => scrollTo(e, "top")}  
+				style={{...local.li}} ><img src={"img/play.png"} style={{height: 20}}/></li> 
+				<li  style={{...local.border}} />
+				<li onClick={(e) => scrollTo(e, "bc")} 
+				style={{...local.li, fontWeight: active == 2 ? "bold":"normal"}}>Background & Challenges</li> 
 				<li  style={{...local.border}} ></li>
-				<li onClick={(e) => scrollTo(e, "bc")} style={{...local.li}}>Background & Challenges</li> 
+				<li onClick={(e) => scrollTo(e, "sol")} 
+				style={{...local.li, fontWeight: active == 3 ? "bold":"normal"}}>Solution</li> 
 				<li  style={{...local.border}} ></li>
-				<li onClick={(e) => scrollTo(e, "sol")} style={{...local.li}}>Solution</li> 
+				<li onClick={(e) => scrollTo(e, "ss")} 
+				style={{...local.li, fontWeight: active == 1 ? "bold":"normal"}}>Results & Effectiveness</li> 
 				<li  style={{...local.border}} ></li>
-				<li onClick={(e) => scrollTo(e, "ss")} style={{...local.li}}>Results & Effectiveness</li> 
-				<li  style={{...local.border}} ></li>
-				<li onClick={(e) => scrollTo(e, "ss")} style={{...local.li}}>Slideshow</li>
+				<li onClick={(e) => scrollTo(e, "ss")} 
+				style={{...local.li , fontWeight: active == 4 ? "bold":"normal"}}>Slideshow</li>
 				<li style={{marginRight: 50}}></li>
-				<li  style={{...local.li, }}>
+				<li  style={{...local.li}}>
 					<div style={{...local.downloadBoard}}>
 					<img  src={"img/dl.png"} style={{width: 10, marginRight: 5, }}/>
 						Download board
@@ -87,7 +121,7 @@ let Navbar = () => {
 				</li>
 			</ul>
 
-			<NavbarDropdown />
+			<NavbarDropdown active={active}/>
 			
 			<style jsx="true">
 			{`

@@ -1,12 +1,13 @@
 let BackgroundChalleges = () => {
 
 
-	let { useContext, useEffect, useState } = React
-	let { styles: {windowHeight, transparentGradient, bcTitle, bc}, margins, windowWidth } = useContext(ContextServices)
+	let { useContext, useEffect, useState, useRef } = React
+	let { styles: {transparentGradient, bcTitle, bc}, margins, windowWidth, windowHeight } = useContext(ContextServices)
 
 	let [hideTitle, setHideTitle] = useState(false)
-	let [bcmargin, setBcmargin] = useState(0)
-	let [bcpadding, setBcpadding] = useState(180)
+
+	let [bcpadding, setBcpadding] = useState(0)
+	let post = useRef(null)
 
 	useEffect(() => {
 		let hide = false
@@ -18,14 +19,14 @@ let BackgroundChalleges = () => {
 	
 	}, [windowWidth])
 
-
 	useEffect(() => {
-		console.log(bcmargin)
-	}, [bcmargin])
+		console.log("bc",post)
+	}, [])
+
 
 	return (
-		<div  style={{...windowHeight, ...transparentGradient}}>
-			<div id="bc" style={{...bc, marginLeft: margins,marginRight: margins,marginTop: bcmargin, paddingTop: bcpadding }}>
+		<div  className="bc-height" style={{ ...transparentGradient}}>
+			<div id="bc" ref={post} style={{...bc, marginLeft: margins,marginRight: margins,marginTop: 30 }}>
 
 				{hideTitle && 
 					<div style={{...bcTitle, }}>
@@ -35,10 +36,10 @@ let BackgroundChalleges = () => {
 	
 					</div>
 				}
-				<div style={{width: "450px", color: "white", display: "flex", justifyContent: "center"}}>
+				<div style={{maxWidth: "450px", color: "white", display: "flex", justifyContent: "center"}}>
 
-					<div style={{width: "350px"}}>
-						<p style={{fontSize:"35px", width: "300px", marginBottom: "0px"}}>Background & Audience</p>
+					<div >
+						<p style={{fontSize:"35px", marginBottom: "0px", maxWidth: 200}}>Background & Audience</p>
 
 						<p style={{fontSize:"14px",}}>
 							Tourism & Events Queensland wanted to increase consideration
@@ -46,13 +47,13 @@ let BackgroundChalleges = () => {
 							consumers that socialize substantially online.
 						</p>
 
-						<p style={{fontSize:"35px", width: "300px", marginBottom: "0px"}}>Problem</p>
+						<p style={{fontSize:"35px", marginBottom: "0px"}}>Problem</p>
 
 						<p style={{fontSize:"14px", }}>
 							The Whitesundays was losing its cachet as an aspirational holiday location.
 						</p>
 
-						<p style={{fontSize:"35px", width: "300px", marginBottom: "0px"}}>Objective</p>
+						<p style={{fontSize:"35px",  marginBottom: "0px"}}>Objective</p>
 
 						<p style={{fontSize:"14px", }}>
 							Shift perceptions and re-build the whitesundays' social currency as world-class destination.
@@ -60,7 +61,15 @@ let BackgroundChalleges = () => {
 					</div>
 				</div>
 			</div>
-
+			<style>
+			{`
+				.bc-height {
+					height: ${windowHeight}px;
+				}
+					
+			`}
+			</style>
+				}
 		</div>
 
 	)

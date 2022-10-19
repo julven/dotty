@@ -1,4 +1,4 @@
-let NavbarDropdown = () => {
+let NavbarDropdown = ({active}) => {
 
 	let { useContext, useEffect, useState, useRef } = React
 	let { windowHeight,  windowWidth } = useContext(ContextServices)
@@ -63,10 +63,15 @@ let NavbarDropdown = () => {
 				<div className="dropdown" ref={dropdown} >
 				 
 				  <div id="myDropdown" className="dropdown-content" onClick={dropdownClick}>
-				    <a href="#/" onClick={(e)=> scrollTo(e, "bc")}>Background & Challenges</a>
-				    <a href="#/" onClick={(e)=> scrollTo(e, "sol")}>Solution</a>
+				  	<a style={{fontWeight: active == 1? "bold":"normal"}}
+				  	 href="#/" onClick={(e)=> scrollTo(e, "top")}>Top</a>
+				    <a style={{fontWeight: active == 2? "bold":"normal"}}
+				     href="#/" onClick={(e)=> scrollTo(e, "bc")}>Background & Challenges</a>
+				    <a style={{fontWeight: active == 3? "bold":"normal"}}
+				     href="#/" onClick={(e)=> scrollTo(e, "sol")}>Solution</a>
 				    <a href="#/" onClick={(e)=> scrollTo(e, "ss")}>Results & Effectiveness</a>
-				    <a href="#/" onClick={(e)=> scrollTo(e, "ss")}>Slideshow</a>
+				    <a style={{fontWeight: active == 4? "bold":"normal"}}
+				     href="#/" onClick={(e)=> scrollTo(e, "ss")}>Slideshow</a>
 				    <a href="#/" onClick={(e)=> scrollTo(e, "")}>
 				    	<div style={{...s.downloadBoard}}>
 							<img  src={"img/dl.png"} style={{width: 10, marginRight: 5}}/>

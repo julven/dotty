@@ -1,12 +1,14 @@
 let Main = () => {
 
-	let { useContext, useEffect, useState } = React
+	let { useContext, useEffect, useState, useRef } = React
 	let { 
 		windowWidth,
 		margins,
 		windowHeight,
-		modal
+		modal,
+		setElPos
 	} = useContext(ContextServices)
+	let pos = useRef(null)
 
 	let openModal = () => {
 		modal.current.style.display = "block";
@@ -16,15 +18,23 @@ let Main = () => {
 		console.log(windowWidth)
 	}, [margins, windowWidth])
 
+	useEffect(() => {
+		console.log("top",pos.current.offsetTop)
+	}, [])
+
 	return (
-		<div id="top">
-			<div className="main " >
-			
+		<div id="top" ref={pos} >
+			<div >
+				
+				
+					<img src="img/main.jpg" className="main-image"/>
+				
+
 				<div className="main-height main-title main-title-margin" >
-					<div  className="main-color">
-						<h2  >THE</h2>
-						<h1 >WHITESUNDAYS</h1>
-						<p>A MOVIE THAT'S WAITING TO BE WRITTEN</p>
+					<div  className=" main-color">
+						<h2  style={{fontSize: "2.9vmax", }}>THE</h2>
+						<h1 style={{fontSize: "4.4vmax", }}>WHITESUNDAYS</h1>
+						<p style={{fontSize: "1.7vmax"}}>A MOVIE THAT'S WAITING TO BE WRITTEN</p>
 					</div>
 					
 				</div>
@@ -32,22 +42,21 @@ let Main = () => {
 				<div className="main-height  main-play">
 					<img src="img/mainplay.png" className="main-play-image" onClick={openModal}/>
 				</div>
-
-				
-				{/*<img src="img/main.jpg" style={{width: "100%", visibility: "hidden"}}/>*/}
-				
-				
 				
 			</div>
 
 			<style jsx="true">{`
-				.main {
+			
+				.main-image {
 					
-					
-					background-image: url('img/main.jpg');
-					background-repeat: no-repeat;
-					background-size: cover;
-					background-position: center top;
+					width: 100%;
+					min-height: 1372px;
+
+					position: absolute;
+					object-fit: cover;
+
+				
+
 
 				}
 				.main-height {
@@ -82,8 +91,9 @@ let Main = () => {
 				}
 				.main-color {
 					color: white;
-					line-height: 1px;
+					line-height: 2px;
 				}
+				
 				.main-play {
 					display: flex;
 					justify-content: center;
@@ -97,7 +107,7 @@ let Main = () => {
 					height: 120px;
 					padding-bottom: ${windowWidth < 900 ? "70px" : "0px"};
 					cursor: pointer;
-						z-index: 1
+					z-index: 1
 				}
 				
 			`}

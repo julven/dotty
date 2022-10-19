@@ -1,9 +1,15 @@
 let Slideshow = () => {
 
-	let { useContext, useEffect, useState } = React
-	let { styles: {windowHeight, border, backgroundGradient, cursorHover, solution} } = useContext(ContextServices)
+	let { useContext, useEffect, useState, useRef } = React
+	let { styles: { border, backgroundGradient, cursorHover, solution}, windowHeight } = useContext(ContextServices)
 
 	let [tab, setTab] = useState(1)
+	let pos = useRef(null)
+
+
+	useEffect(() => {
+		console.log("ss",pos.current.offsetTop)
+	}, [])
 
 	let [s] = useState({
 
@@ -18,8 +24,6 @@ let Slideshow = () => {
 			flexWrap: "wrap",
 			justifyContent: "center"
 
-
-
 		},
 		li: {
 				fontSize: "15px",
@@ -29,8 +33,6 @@ let Slideshow = () => {
 			  padding: "8px 8px 8px 8px",
 			  textDecoration: "none",
 			  cursor: "pointer",
-
-
 		},
 
 		hover: {
@@ -45,11 +47,14 @@ let Slideshow = () => {
 			backgroundColor: "#282828",
 			padding: "2px 12px 2px 12px ",
 			borderRadius: 8
+		},
+		solution: {
+			
 		}
 	})
 
 	return (
-		<div id="ss" style={{...windowHeight, ...backgroundGradient}}>
+		<div ref={pos} id="ss" className="ss-height" style={{ ...backgroundGradient, ...s.solution}}>
 			<div style={{padding: "50px 0 50px 0"}}>
 				<ul style={{...s.ul, paddingBottom: "70px"}}>
 					<li onClick={()=>setTab(1)} 
@@ -101,7 +106,11 @@ let Slideshow = () => {
 				</div>
 
 			</div>
-
+			<style>{`
+				.ss-height {
+					min-height: ${windowHeight}px;
+				}
+			`}</style>
 		</div>
 	)
 }

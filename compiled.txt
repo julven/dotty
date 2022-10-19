@@ -10,6 +10,7 @@ let ContextServicesProvider = (props) => {
 	let [margins, setMargins] = useState("2%");
 	let [screenWidth, setScreenWidth] = useState(null)
 	let modal = useRef(null)
+	
 
 
 	let getTest = () => {
@@ -127,7 +128,8 @@ let ContextServicesProvider = (props) => {
 			margins,
 			screenWidth,
 			windowHeight,
-			modal
+			modal,
+			
 		}}>
 
 			{props.children}
@@ -139,8 +141,37 @@ let Navbar = () => {
 	let { useContext, useEffect, useState } = React
 	let { windowHeight,windowWidth } = useContext(ContextServices)
 	let [hover, setHover] = useState(false)
-
+	let [active, setActive] = useState(1);
+	let [scroll, setScroll] = useState(0)
 	
+
+	useEffect( () => {
+		window.onscroll = e => {
+			setScroll(window.scrollY)
+		}
+	},[])
+
+
+	useEffect( () => {
+		// console.log(scroll)
+		if(scroll < windowHeight){ 
+			setActive(1) 
+		}
+		else if (scroll > windowHeight && scroll <=windowHeight*2) {
+			setActive(2)
+		}
+		else if (scroll > windowHeight* 2 && scroll <=windowHeight*3) {
+			setActive(3)
+		}
+		else if (scroll > windowHeight* 3 && scroll ) {
+			setActive(4)
+		}
+	},[scroll])
+
+	// useEffect( () => {
+	// 	console.log(active)
+	// },[active])
+
 
 	let [local] = useState({
 		ul: {
@@ -205,17 +236,22 @@ let Navbar = () => {
 		<div>
 			<ul style={{...local.ul, visibility: windowWidth < 700 ? "hidden" : "visible"}}>
 
-				<li  style={{...local.li}} ><img src={"img/play.png"} style={{height: 20}}/></li> 
+				<li onClick={(e) => scrollTo(e, "top")}  
+				style={{...local.li}} ><img src={"img/play.png"} style={{height: 20}}/></li> 
+				<li  style={{...local.border}} />
+				<li onClick={(e) => scrollTo(e, "bc")} 
+				style={{...local.li, fontWeight: active == 2 ? "bold":"normal"}}>Background & Challenges</li> 
 				<li  style={{...local.border}} ></li>
-				<li onClick={(e) => scrollTo(e, "bc")} style={{...local.li}}>Background & Challenges</li> 
+				<li onClick={(e) => scrollTo(e, "sol")} 
+				style={{...local.li, fontWeight: active == 3 ? "bold":"normal"}}>Solution</li> 
 				<li  style={{...local.border}} ></li>
-				<li onClick={(e) => scrollTo(e, "sol")} style={{...local.li}}>Solution</li> 
+				<li onClick={(e) => scrollTo(e, "ss")} 
+				style={{...local.li, fontWeight: active == 1 ? "bold":"normal"}}>Results & Effectiveness</li> 
 				<li  style={{...local.border}} ></li>
-				<li onClick={(e) => scrollTo(e, "ss")} style={{...local.li}}>Results & Effectiveness</li> 
-				<li  style={{...local.border}} ></li>
-				<li onClick={(e) => scrollTo(e, "ss")} style={{...local.li}}>Slideshow</li>
+				<li onClick={(e) => scrollTo(e, "ss")} 
+				style={{...local.li , fontWeight: active == 4 ? "bold":"normal"}}>Slideshow</li>
 				<li style={{marginRight: 50}}></li>
-				<li  style={{...local.li, }}>
+				<li  style={{...local.li}}>
 					<div style={{...local.downloadBoard}}>
 					<img  src={"img/dl.png"} style={{width: 10, marginRight: 5, }}/>
 						Download board
@@ -223,7 +259,7 @@ let Navbar = () => {
 				</li>
 			</ul>
 
-			<NavbarDropdown />
+			<NavbarDropdown active={active}/>
 			
 			<style jsx="true">
 			{`
@@ -235,7 +271,7 @@ let Navbar = () => {
 
 	)
 }
-let NavbarDropdown = () => {
+let NavbarDropdown = ({active}) => {
 
 	let { useContext, useEffect, useState, useRef } = React
 	let { windowHeight,  windowWidth } = useContext(ContextServices)
@@ -300,10 +336,15 @@ let NavbarDropdown = () => {
 				<div className="dropdown" ref={dropdown} >
 				 
 				  <div id="myDropdown" className="dropdown-content" onClick={dropdownClick}>
-				    <a href="#/" onClick={(e)=> scrollTo(e, "bc")}>Background & Challenges</a>
-				    <a href="#/" onClick={(e)=> scrollTo(e, "sol")}>Solution</a>
+				  	<a style={{fontWeight: active == 1? "bold":"normal"}}
+				  	 href="#/" onClick={(e)=> scrollTo(e, "top")}>Top</a>
+				    <a style={{fontWeight: active == 2? "bold":"normal"}}
+				     href="#/" onClick={(e)=> scrollTo(e, "bc")}>Background & Challenges</a>
+				    <a style={{fontWeight: active == 3? "bold":"normal"}}
+				     href="#/" onClick={(e)=> scrollTo(e, "sol")}>Solution</a>
 				    <a href="#/" onClick={(e)=> scrollTo(e, "ss")}>Results & Effectiveness</a>
-				    <a href="#/" onClick={(e)=> scrollTo(e, "ss")}>Slideshow</a>
+				    <a style={{fontWeight: active == 4? "bold":"normal"}}
+				     href="#/" onClick={(e)=> scrollTo(e, "ss")}>Slideshow</a>
 				    <a href="#/" onClick={(e)=> scrollTo(e, "")}>
 				    	<div style={{...s.downloadBoard}}>
 							<img  src={"img/dl.png"} style={{width: 10, marginRight: 5}}/>
@@ -358,13 +399,15 @@ let NavbarDropdown = () => {
 }
 let Main = () => {
 
-	let { useContext, useEffect, useState } = React
+	let { useContext, useEffect, useState, useRef } = React
 	let { 
 		windowWidth,
 		margins,
 		windowHeight,
-		modal
+		modal,
+		setElPos
 	} = useContext(ContextServices)
+	let pos = useRef(null)
 
 	let openModal = () => {
 		modal.current.style.display = "block";
@@ -374,15 +417,23 @@ let Main = () => {
 		console.log(windowWidth)
 	}, [margins, windowWidth])
 
+	useEffect(() => {
+		console.log("top",pos.current.offsetTop)
+	}, [])
+
 	return (
-		<div id="top">
-			<div className="main " >
-			
+		<div id="top" ref={pos} >
+			<div >
+				
+				
+					<img src="img/main.jpg" className="main-image"/>
+				
+
 				<div className="main-height main-title main-title-margin" >
-					<div  className="main-color">
-						<h2  >THE</h2>
-						<h1 >WHITESUNDAYS</h1>
-						<p>A MOVIE THAT'S WAITING TO BE WRITTEN</p>
+					<div  className=" main-color">
+						<h2  style={{fontSize: "2.9vmax", }}>THE</h2>
+						<h1 style={{fontSize: "4.4vmax", }}>WHITESUNDAYS</h1>
+						<p style={{fontSize: "1.7vmax"}}>A MOVIE THAT'S WAITING TO BE WRITTEN</p>
 					</div>
 					
 				</div>
@@ -390,22 +441,21 @@ let Main = () => {
 				<div className="main-height  main-play">
 					<img src="img/mainplay.png" className="main-play-image" onClick={openModal}/>
 				</div>
-
-				
-				{/*<img src="img/main.jpg" style={{width: "100%", visibility: "hidden"}}/>*/}
-				
-				
 				
 			</div>
 
 			<style jsx="true">{`
-				.main {
+			
+				.main-image {
 					
-					
-					background-image: url('img/main.jpg');
-					background-repeat: no-repeat;
-					background-size: cover;
-					background-position: center top;
+					width: 100%;
+					min-height: 1372px;
+
+					position: absolute;
+					object-fit: cover;
+
+				
+
 
 				}
 				.main-height {
@@ -440,8 +490,9 @@ let Main = () => {
 				}
 				.main-color {
 					color: white;
-					line-height: 1px;
+					line-height: 2px;
 				}
+				
 				.main-play {
 					display: flex;
 					justify-content: center;
@@ -455,7 +506,7 @@ let Main = () => {
 					height: 120px;
 					padding-bottom: ${windowWidth < 900 ? "70px" : "0px"};
 					cursor: pointer;
-						z-index: 1
+					z-index: 1
 				}
 				
 			`}
@@ -466,12 +517,13 @@ let Main = () => {
 let BackgroundChalleges = () => {
 
 
-	let { useContext, useEffect, useState } = React
-	let { styles: {windowHeight, transparentGradient, bcTitle, bc}, margins, windowWidth } = useContext(ContextServices)
+	let { useContext, useEffect, useState, useRef } = React
+	let { styles: {transparentGradient, bcTitle, bc}, margins, windowWidth, windowHeight } = useContext(ContextServices)
 
 	let [hideTitle, setHideTitle] = useState(false)
-	let [bcmargin, setBcmargin] = useState(0)
-	let [bcpadding, setBcpadding] = useState(180)
+
+	let [bcpadding, setBcpadding] = useState(0)
+	let post = useRef(null)
 
 	useEffect(() => {
 		let hide = false
@@ -483,14 +535,14 @@ let BackgroundChalleges = () => {
 	
 	}, [windowWidth])
 
-
 	useEffect(() => {
-		console.log(bcmargin)
-	}, [bcmargin])
+		console.log("bc",post)
+	}, [])
+
 
 	return (
-		<div  style={{...windowHeight, ...transparentGradient}}>
-			<div id="bc" style={{...bc, marginLeft: margins,marginRight: margins,marginTop: bcmargin, paddingTop: bcpadding }}>
+		<div  className="bc-height" style={{ ...transparentGradient}}>
+			<div id="bc" ref={post} style={{...bc, marginLeft: margins,marginRight: margins,marginTop: 30 }}>
 
 				{hideTitle && 
 					<div style={{...bcTitle, }}>
@@ -500,10 +552,10 @@ let BackgroundChalleges = () => {
 	
 					</div>
 				}
-				<div style={{width: "450px", color: "white", display: "flex", justifyContent: "center"}}>
+				<div style={{maxWidth: "450px", color: "white", display: "flex", justifyContent: "center"}}>
 
-					<div style={{width: "350px"}}>
-						<p style={{fontSize:"35px", width: "300px", marginBottom: "0px"}}>Background & Audience</p>
+					<div >
+						<p style={{fontSize:"35px", marginBottom: "0px", maxWidth: 200}}>Background & Audience</p>
 
 						<p style={{fontSize:"14px",}}>
 							Tourism & Events Queensland wanted to increase consideration
@@ -511,13 +563,13 @@ let BackgroundChalleges = () => {
 							consumers that socialize substantially online.
 						</p>
 
-						<p style={{fontSize:"35px", width: "300px", marginBottom: "0px"}}>Problem</p>
+						<p style={{fontSize:"35px", marginBottom: "0px"}}>Problem</p>
 
 						<p style={{fontSize:"14px", }}>
 							The Whitesundays was losing its cachet as an aspirational holiday location.
 						</p>
 
-						<p style={{fontSize:"35px", width: "300px", marginBottom: "0px"}}>Objective</p>
+						<p style={{fontSize:"35px",  marginBottom: "0px"}}>Objective</p>
 
 						<p style={{fontSize:"14px", }}>
 							Shift perceptions and re-build the whitesundays' social currency as world-class destination.
@@ -525,22 +577,35 @@ let BackgroundChalleges = () => {
 					</div>
 				</div>
 			</div>
-
+			<style>
+			{`
+				.bc-height {
+					height: ${windowHeight}px;
+				}
+					
+			`}
+			</style>
+				}
 		</div>
 
 	)
 }
 let Solutions = () => {
 
-	let { useContext, useEffect, useState } = React
-	let { styles: {windowHeight, backgroundGradient, solution},margins } = useContext(ContextServices)
+	let { useContext, useEffect, useState, useRef } = React
+	let { styles: { backgroundGradient, solution},margins, windowHeight } = useContext(ContextServices)
+	let pos = useRef(null)
 
+
+	useEffect(() => {
+		console.log("sol",pos.current.offsetTop)
+	}, [])
 
 	return (
-		<div id="sol" style={{...windowHeight, ...backgroundGradient, paddingTop: 100}}>
+		<div id="sol" className="sol-height" ref={pos} style={{ ...backgroundGradient}}>
 			<div style={{color: "white", marginLeft: margins, marginRight: margins}}>
 				<p style={{textAlign:"center", margin: "0 0 0 0", fontSize: "35px"}}>Solution</p>
-				<div style={{...solution}}>
+				<div style={{...solution,  paddingBottom: "40px"}}>
 					<div style={{width: "350px" , padding: " 10px 20px"}}>
 						<p style={{fontSize: "15px"}}>We knew movies rated high on the list of our target’s interests and, with incredible beaches, seaplanes, yachts and glamorous locations, the Whitsundays is the perfect setting for a movie. </p>
 
@@ -556,7 +621,7 @@ let Solutions = () => {
 						</p>
 
 					</div>
-					<div  style={{width: "350px", padding: " 10px 20px", paddingBottom: "50px"}}>
+					<div  style={{width: "350px", padding: " 10px 20px",}}>
 						<p style={{fontSize: "15px"}}>The campaign launched with a trailer, radio and online advertising. </p>
 
 						<p style={{fontSize: "15px"}}>We reacted to the storyline as it developed, selecting and treating images according to the previous winning scene.</p>
@@ -571,7 +636,11 @@ let Solutions = () => {
 				</div>
 
 			</div>
-
+			<style>{`
+				.sol-height {
+					min-height: ${windowHeight}px;
+				}
+			`}</style>
 		</div>
 
 	)
@@ -595,8 +664,8 @@ let SlideshowVideo = () => {
 
 
 	return (
-		<div >
-			<iframe style={{maxWidth: 350, maxHeight: 350}}  frameBorder="0"  allowFullScreen
+		<div style={{maxWidth: 350, maxHeight: 350}}>
+			<iframe  style={{width: "100%"}}  frameBorder="0"  allowFullScreen
 			src="https://www.youtube.com/embed/GB9zY0p0B24" >
 			</iframe>
 		</div>
@@ -817,10 +886,16 @@ let SlideshowRadio = () => {
 }
 let Slideshow = () => {
 
-	let { useContext, useEffect, useState } = React
-	let { styles: {windowHeight, border, backgroundGradient, cursorHover, solution} } = useContext(ContextServices)
+	let { useContext, useEffect, useState, useRef } = React
+	let { styles: { border, backgroundGradient, cursorHover, solution}, windowHeight } = useContext(ContextServices)
 
 	let [tab, setTab] = useState(1)
+	let pos = useRef(null)
+
+
+	useEffect(() => {
+		console.log("ss",pos.current.offsetTop)
+	}, [])
 
 	let [s] = useState({
 
@@ -835,8 +910,6 @@ let Slideshow = () => {
 			flexWrap: "wrap",
 			justifyContent: "center"
 
-
-
 		},
 		li: {
 				fontSize: "15px",
@@ -846,8 +919,6 @@ let Slideshow = () => {
 			  padding: "8px 8px 8px 8px",
 			  textDecoration: "none",
 			  cursor: "pointer",
-
-
 		},
 
 		hover: {
@@ -862,11 +933,14 @@ let Slideshow = () => {
 			backgroundColor: "#282828",
 			padding: "2px 12px 2px 12px ",
 			borderRadius: 8
+		},
+		solution: {
+			
 		}
 	})
 
 	return (
-		<div id="ss" style={{...windowHeight, ...backgroundGradient}}>
+		<div ref={pos} id="ss" className="ss-height" style={{ ...backgroundGradient, ...s.solution}}>
 			<div style={{padding: "50px 0 50px 0"}}>
 				<ul style={{...s.ul, paddingBottom: "70px"}}>
 					<li onClick={()=>setTab(1)} 
@@ -918,7 +992,11 @@ let Slideshow = () => {
 				</div>
 
 			</div>
-
+			<style>{`
+				.ss-height {
+					min-height: ${windowHeight}px;
+				}
+			`}</style>
 		</div>
 	)
 }
@@ -1013,22 +1091,65 @@ let Modal = () => {
 
 const App = () => {
 
-	let { useContext, useEffect, useState } = React
+	let { useContext, useEffect, useState, useRef } = React
 	let {screenWidth, windowWidth, windowHeight } = useContext(ContextServices)
+ 	let [load, setLoad] = useState(true);
+
  
 
+ 	let [s] = useState({
+ 		loader: {
+ 			backgroundColor: "#17465a",
+ 			display: "flex", 
+ 			justifyContent: "center", 
+ 			height: windowHeight , 
+ 			alignItems: "center",
+
+ 		}
+ 	})
 
  	useEffect( () => {
-		// console.log(windowWidth)
-	}, [windowWidth])
+ 		let imgLoad = new Image()
+		 imgLoad.onload = e => {
+          	setLoad(false)
+        }
+        imgLoad.src = "img/main.jpg";
 
 
+	}, [])
+
+
+
+ 	if(load) {
+
+ 		return (
+ 			<div style={{...s.loader}}>
+ 				<div className="loader"></div>
+ 				<style>{`
+					.loader {
+					  border: 16px solid #f3f3f3; /* Light grey */
+					  border-top: 16px solid #3498db; /* Blue */
+					  border-radius: 50%;
+					  width: 120px;
+					  height: 120px;
+					  animation: spin 2s linear infinite;
+					  margin-bottom: 100px;
+					}
+
+					@keyframes spin {
+					  0% { transform: rotate(0deg); }
+					  100% { transform: rotate(360deg); }
+					}
+ 				`}</style>
+ 			</div>
+ 		)
+ 	}
 	return (
-		<div style={{minWidth: "350px", height: 1}}>
+		<div style={{ height: 1}}>
 			<Navbar />
-			<Main />
-			<div style={{ bottom: 230, position: "relative"}}>
-				<BackgroundChalleges />
+			<Main  />
+			<div style={{ position: "relative"}}>
+				<BackgroundChalleges  />
 				<Solutions />
 				<Slideshow />
 			</div>

@@ -1,14 +1,19 @@
 let Solutions = () => {
 
-	let { useContext, useEffect, useState } = React
-	let { styles: {windowHeight, backgroundGradient, solution},margins } = useContext(ContextServices)
+	let { useContext, useEffect, useState, useRef } = React
+	let { styles: { backgroundGradient, solution},margins, windowHeight } = useContext(ContextServices)
+	let pos = useRef(null)
 
+
+	useEffect(() => {
+		console.log("sol",pos.current.offsetTop)
+	}, [])
 
 	return (
-		<div id="sol" style={{...windowHeight, ...backgroundGradient, paddingTop: 100}}>
+		<div id="sol" className="sol-height" ref={pos} style={{ ...backgroundGradient}}>
 			<div style={{color: "white", marginLeft: margins, marginRight: margins}}>
 				<p style={{textAlign:"center", margin: "0 0 0 0", fontSize: "35px"}}>Solution</p>
-				<div style={{...solution}}>
+				<div style={{...solution,  paddingBottom: "40px"}}>
 					<div style={{width: "350px" , padding: " 10px 20px"}}>
 						<p style={{fontSize: "15px"}}>We knew movies rated high on the list of our target’s interests and, with incredible beaches, seaplanes, yachts and glamorous locations, the Whitsundays is the perfect setting for a movie. </p>
 
@@ -24,7 +29,7 @@ let Solutions = () => {
 						</p>
 
 					</div>
-					<div  style={{width: "350px", padding: " 10px 20px", paddingBottom: "50px"}}>
+					<div  style={{width: "350px", padding: " 10px 20px",}}>
 						<p style={{fontSize: "15px"}}>The campaign launched with a trailer, radio and online advertising. </p>
 
 						<p style={{fontSize: "15px"}}>We reacted to the storyline as it developed, selecting and treating images according to the previous winning scene.</p>
@@ -39,7 +44,11 @@ let Solutions = () => {
 				</div>
 
 			</div>
-
+			<style>{`
+				.sol-height {
+					min-height: ${windowHeight}px;
+				}
+			`}</style>
 		</div>
 
 	)

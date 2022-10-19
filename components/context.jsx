@@ -10,6 +10,7 @@ let ContextServicesProvider = (props) => {
 	let [margins, setMargins] = useState("2%");
 	let [screenWidth, setScreenWidth] = useState(null)
 	let modal = useRef(null)
+	
 
 
 	let getTest = () => {
@@ -127,7 +128,8 @@ let ContextServicesProvider = (props) => {
 			margins,
 			screenWidth,
 			windowHeight,
-			modal
+			modal,
+			
 		}}>
 
 			{props.children}
