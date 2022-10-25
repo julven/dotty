@@ -300,11 +300,14 @@ let NavbarDropdown = ({active}) => {
 			position: "fixed",
 			zIndex: 999,
 			border: 0,
-			borderRadius: "30px",
+			borderRadius: "100px",
 			top: 10,
 			right: 10,
 			backgroundColor: "#333333",
-			cursor: "pointer"
+			cursor: "pointer",
+			width: "65px",
+			height: "65px",
+			boxShadow: "0px 8px 16px 0px rgba(0,0,0,0.2)"
 			
 			
 		},
@@ -330,7 +333,7 @@ let NavbarDropdown = ({active}) => {
 		<div style={{visibility: windowWidth >= 700 ? "hidden" : "visible"}}>
 			<div style={{...s.dropdown}}>
 				<button style={{...s.dropdownButton}} onClick={toggleDropdown}> 
-					<span style={{color: "white", fontSize: "40px", margin: "0 7px"}}>&#9776;</span>
+					<span style={{color: "white", fontSize: "40px"}}>&#9776;</span>
 				</button>
 
 				<div className="dropdown" ref={dropdown} >
@@ -541,8 +544,8 @@ let BackgroundChalleges = () => {
 
 
 	return (
-		<div  className="bc-height" style={{ ...transparentGradient}}>
-			<div id="bc" ref={post} style={{...bc, marginLeft: margins,marginRight: margins,marginTop: 30 }}>
+		<div  className="" style={{ ...transparentGradient}}>
+			<div className="bc-height" id="bc" ref={post} style={{...bc, marginLeft: margins,marginRight: margins,marginTop: 30 }}>
 
 				{hideTitle && 
 					<div style={{...bcTitle, }}>
@@ -580,11 +583,14 @@ let BackgroundChalleges = () => {
 			<style>
 			{`
 				.bc-height {
-					height: ${windowHeight}px;
+					min-height: ${windowHeight}px;
+					
 				}
+				
 					
 			`}
 			</style>
+				}
 				}
 		</div>
 
@@ -601,9 +607,13 @@ let Solutions = () => {
 		console.log("sol",pos.current.offsetTop)
 	}, [])
 
+
+	useEffect(() => {
+		console.log("sol",windowHeight)
+	}, [windowHeight])
 	return (
-		<div id="sol" className="sol-height" ref={pos} style={{ ...backgroundGradient}}>
-			<div style={{color: "white", marginLeft: margins, marginRight: margins}}>
+		<div id="sol" className="sol-height sol-center " ref={pos} style={{ ...backgroundGradient}}>
+			<div className=" " style={{color: "white", marginLeft: margins, marginRight: margins, padding: "20px"}}>
 				<p style={{textAlign:"center", margin: "0 0 0 0", fontSize: "35px"}}>Solution</p>
 				<div style={{...solution,  paddingBottom: "40px"}}>
 					<div style={{width: "350px" , padding: " 10px 20px"}}>
@@ -639,6 +649,12 @@ let Solutions = () => {
 			<style>{`
 				.sol-height {
 					min-height: ${windowHeight}px;
+				}
+				.sol-center {
+				
+					display: flex;
+					justify-content: center;
+					align-items: center;
 				}
 			`}</style>
 		</div>

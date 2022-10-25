@@ -27,11 +27,14 @@ let NavbarDropdown = ({active}) => {
 			position: "fixed",
 			zIndex: 999,
 			border: 0,
-			borderRadius: "30px",
+			borderRadius: "100px",
 			top: 10,
 			right: 10,
 			backgroundColor: "#333333",
-			cursor: "pointer"
+			cursor: "pointer",
+			width: "65px",
+			height: "65px",
+			boxShadow: "0px 8px 16px 0px rgba(0,0,0,0.2)"
 			
 			
 		},
@@ -57,7 +60,7 @@ let NavbarDropdown = ({active}) => {
 		<div style={{visibility: windowWidth >= 700 ? "hidden" : "visible"}}>
 			<div style={{...s.dropdown}}>
 				<button style={{...s.dropdownButton}} onClick={toggleDropdown}> 
-					<span style={{color: "white", fontSize: "40px", margin: "0 7px"}}>&#9776;</span>
+					<span style={{color: "white", fontSize: "40px"}}>&#9776;</span>
 				</button>
 
 				<div className="dropdown" ref={dropdown} >

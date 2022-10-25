@@ -9,9 +9,13 @@ let Solutions = () => {
 		console.log("sol",pos.current.offsetTop)
 	}, [])
 
+
+	useEffect(() => {
+		console.log("sol",windowHeight)
+	}, [windowHeight])
 	return (
-		<div id="sol" className="sol-height" ref={pos} style={{ ...backgroundGradient}}>
-			<div style={{color: "white", marginLeft: margins, marginRight: margins}}>
+		<div id="sol" className="sol-height sol-center " ref={pos} style={{ ...backgroundGradient}}>
+			<div className=" " style={{color: "white", marginLeft: margins, marginRight: margins, padding: "20px"}}>
 				<p style={{textAlign:"center", margin: "0 0 0 0", fontSize: "35px"}}>Solution</p>
 				<div style={{...solution,  paddingBottom: "40px"}}>
 					<div style={{width: "350px" , padding: " 10px 20px"}}>
@@ -47,6 +51,12 @@ let Solutions = () => {
 			<style>{`
 				.sol-height {
 					min-height: ${windowHeight}px;
+				}
+				.sol-center {
+				
+					display: flex;
+					justify-content: center;
+					align-items: center;
 				}
 			`}</style>
 		</div>

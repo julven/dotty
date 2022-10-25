@@ -25,8 +25,8 @@ let BackgroundChalleges = () => {
 
 
 	return (
-		<div  className="bc-height" style={{ ...transparentGradient}}>
-			<div id="bc" ref={post} style={{...bc, marginLeft: margins,marginRight: margins,marginTop: 30 }}>
+		<div  className="" style={{ ...transparentGradient}}>
+			<div className="bc-height" id="bc" ref={post} style={{...bc, marginLeft: margins,marginRight: margins,marginTop: 30 }}>
 
 				{hideTitle && 
 					<div style={{...bcTitle, }}>
@@ -64,11 +64,14 @@ let BackgroundChalleges = () => {
 			<style>
 			{`
 				.bc-height {
-					height: ${windowHeight}px;
+					min-height: ${windowHeight}px;
+					
 				}
+				
 					
 			`}
 			</style>
+				}
 				}
 		</div>
 
